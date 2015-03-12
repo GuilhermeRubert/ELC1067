@@ -3,7 +3,7 @@
 #include <string.h>
 void ler_aluno(int* mat, char** nomes, int* n ){
 
-	FILE *f = fopen("Alunos.txt", "r");
+	FILE *f = fopen("alunos.txt", "r");
 	int matr, i;
 	char c, nome[50];
 	int linha = 0;
@@ -25,6 +25,8 @@ void ler_aluno(int* mat, char** nomes, int* n ){
 	*n=linha;
 	fclose(f);
 }
+
+
 
 
 
