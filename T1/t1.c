@@ -42,6 +42,15 @@ void ler_notas(float* meds){
 	fclose(f);
 }
 
+void busca(char nomes[][50],char* arg, float* meds, int* n){
+	int cont;
+	
+	for(cont=0; cont<*n; cont++){
+		if(strstr(nomes[cont], arg)!=NULL){
+			printf("Media: %f Nome:%s\n", meds[cont], nomes[cont]);
+		}
+	}	
+}
 
 int main(int argc, char** argv){
     char* nome;
@@ -56,9 +65,7 @@ int main(int argc, char** argv){
         
         
     ler_alunos(matriculas, nomes, &n);
- 	ler_notas(medias);
- 	return 0;
+    ler_notas(medias);
+    busca(nomes, nome, medias, &n);
+    return 0;
 }
-
-
-
