@@ -1,23 +1,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-void ler_aluno(int* mat, char** nomes, int* n ){
+void ler_alunos(int* mat, char nomes[][50], int* n ){
 
 	FILE *f = fopen("alunos.txt", "r");
-	int matr, i;
+	int matr, cont;
 	char c, nome[50];
 	int linha = 0;
-	while(feof(f) != 0){
-		fscanf(f, "%d", &matr);
-		i=0;
+	while(feof(f) == 0){
+		if(fscanf(f, "%d", &matr)<=0)
+			break;
+		
 		c = fgetc(f);
-		while(c==' ')
+		cont=0;
+		while(c!='\n' && feof(f)==0){
+			nome[cont] = c;
 			c=fgetc(f);
-		while(c!='\n'){
-			nome[i] = c;
-			i++;
+			cont++;
 		}
-		nome[i] = '\0';
+		nome[cont] = '\0';
 		mat[linha] = matr;
 		strcpy(nomes[linha], nome);
 		linha++;
@@ -25,22 +26,38 @@ void ler_aluno(int* mat, char** nomes, int* n ){
 	*n=linha;
 	fclose(f);
 }
-
-
-
-
-
-int main( int argc, char **argv)
-{
-	char *nome;
-	char nomes[50][50]
-	int matricula[50], n;
-	if(argc>1){
-		nome=argv[1];
+void ler_notas(float* meds){
+	FILE *f = fopen("notas.txt", "r");
+	int cont=0,matr;
+	float n1, n2;
+	
+	while(feof(f) == 0){
+		if(fscanf(f, "%d %f %f\n", &matr, &n1, &n2)==0)
+			break;
+		
+		meds[cont] = (n1 + n2)/2;
+		cont++;
 	}
-	printf("%s\n", nome);
-	return 0;
-	ler_aluno(matricula, nomes, &n);
+	
+	fclose(f);
+}
+
+
+int main(int argc, char** argv){
+    char* nome;
+    float medias[50];
+    int matriculas[50],n;
+    char nomes[50][50];
+    
+    if(argc > 1){
+        strcpy(nome, argv[1]);
+        }
+    printf("%s\n",nome);
+        
+        
+    ler_alunos(matriculas, nomes, &n);
+ 	ler_notas(medias);
+ 	return 0;
 }
 
 
