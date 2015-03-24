@@ -1,17 +1,42 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-void ler_alunos(int* mat, char** nomes, int* n ){
+
+
+int tamanho(){
+	
+	FILE *f = fopen("alunos.txt", "r");
+	int con=0;
+	char c;
+	while(feof(f) == 0){
+		c = fgetc(f);
+		while(c!='\n' && feof(f)==0)
+			c=fgetc(f);
+		con++;
+	}
+
+	return con;	
+}
+
+void ler_alunos(int* mat, char** nomes, int* n){
 
 	FILE *f = fopen("alunos.txt", "r");
 	int matr, cont;
-	char c, nome[50];
+	char c;
 	int linha = 0;
-	while(feof(f) == 0){
+	char* nome;
+	
+	nome = (char*) malloc(50* sizeof(char));
+	if(nome == NULL){
+    	printf("Memória insuficiente");
+    }
+	
+	
+	while(c!= EOF){
 		if(fscanf(f, "%d", &matr)<=0)
 			break;
 		
-		c = fgetc(f);
+		c=fgetc(f);
 		cont=0;
 		while(c!='\n' && feof(f)==0){
 			nome[cont] = c;
@@ -20,10 +45,12 @@ void ler_alunos(int* mat, char** nomes, int* n ){
 		}
 		nome[cont] = '\0';
 		mat[linha] = matr;
+		nomes[linha] = (char*) malloc((strlen(nome) + 1)*sizeof(char));
 		strcpy(nomes[linha], nome);
 		linha++;
  	}
 	*n=linha;
+	free(nome);
 	fclose(f);
 }
 void ler_notas(float* meds){
@@ -42,38 +69,77 @@ void ler_notas(float* meds){
 	fclose(f);
 }
 
-void busca(char** nomes,char* arg, float* meds, int* n, int* mat){
-	int cont;
+void busca(char** nomes,char* arg, float* meds, int* n, int* matriculas){
 	
-	for(cont=0; cont<*n; cont++){
-		if(strstr(nomes[cont], arg)!=NULL){
-			printf("Media: %f Nome:%s\n", meds[cont], nomes[cont]);
+	int *matr,i;
+	
+	matr = (int*) malloc(50*sizeof(int));
+	FILE *f = fopen("notas.txt", "r"); 
+	
+	while(feof(f)==0){
+			fscanf(f, "%d * *", &matr);
+			for(i=0; i<*n; i++){
+				if(matriculas[i]==*matr)
+					if(strstr(nomes[i], arg)!=NULL)
+					printf("Media: %f Nome:%s\n", meds[i], nomes[i]);
+			}
 		}
-	}	
+		
+	free(matr);
+	fclose(f);
 }
 
 int main(int argc, char** argv){
-    char* nome;
+    char *nome;
     float *medias;
     int *matriculas,n;
+    int tam, i;
     char **nomes;
     
-    medias = (float*) malloc(50* sizeof(float));
-    matriculas = (int*) malloc(50* sizeof(int));
-    nomes = (char**) malloc(50*sizeof(char));
+    
+    nome = (char*) malloc(50* sizeof(char));
+    if(nome == NULL){
+    	printf("Memória insuficiente");
+    }
+    
     if(argc > 1){
         nome=argv[1];
         }
-    printf("%s\n",nome);
-        
-        
+    
+    
+    tam=tamanho();
+    medias = (float*) malloc(tam* sizeof(float));
+    
+    if(medias == NULL){
+    	printf("Memória insuficiente");
+    }
+    
+    matriculas = (int*) malloc(tam* sizeof(int));
+    
+    if(matriculas == NULL){
+    	printf("Memória insuficiente");
+    }
+    
+    nomes = (char**) malloc(tam*sizeof(char*));
+    if(nomes == NULL){
+    	printf("Memória insuficiente");
+    } 
+    
+       
     ler_alunos(matriculas, nomes, &n);
     ler_notas(medias);
     busca(nomes, nome, medias, &n, matriculas);
     
+    
+    for(i=0; i<n; i++){
+    	free(nomes[i]);
+    }
+	
+	free(nome);
 	free(medias);
     free(matriculas);
     free(nomes);
+    
     
     return 0;
 }
