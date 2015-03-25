@@ -69,24 +69,48 @@ void ler_notas(float* meds){
 	fclose(f);
 }
 
-void busca(char** nomes,char* arg, float* meds, int* n, int* matriculas){
+void busca(int tam, char arg, char** nomes){
 	
-	int *matr,i;
+	int  *mtrNotas, *mtrAlunos,mtrNotas1, mtrAlunos1, i, j;
+	float *med, n1, n2;
+	FILE *f = fopen("notas.txt", "r");
 	
-	matr = (int*) malloc(50*sizeof(int));
-	FILE *f = fopen("notas.txt", "r"); 
+	mtrNotas = (int*) malloc(tam* sizeof(int));
+	med = (float*) malloc(tam* sizeof(float));
 	
-	while(feof(f)==0){
-			fscanf(f, "%d * *", &matr);
-			for(i=0; i<*n; i++){
-				if(matriculas[i]==*matr)
-					if(strstr(nomes[i], arg)!=NULL)
-					printf("Media: %f Nome:%s\n", meds[i], nomes[i]);
-			}
-		}
+	for(i=0; i<tam; i++){
 		
-	free(matr);
+		fscanf(f, "%d %f %f", &mtrNotas1, &n1, &n2);
+		med[i] = (n1+n2)/2;		
+		mtrNotas[i] = mtrNotas1;
+	}
+	
 	fclose(f);
+	
+	FILE *a = fopen("alunos.txt", "r");
+	
+	mtrAlunos = (int*) malloc(tam* sizeof(int));
+	
+	
+	for(i=0; i<tam; i++){
+		
+		fscanf(a, "%d ", &mtrAlunos1);	
+		mtrAlunos[i] = mtrAlunos1;
+	}
+	
+	for(j=0; j<tam; j++){
+		for(i=0; i<tam; i++){
+			if(nomes[i] == arg)
+				if(mtrNotas[i] == mtrAlunos[j]){
+				printf("Nome: %s Media: %f", med[i]);
+				}
+		}	
+	}
+	
+	free(mtrNotas);
+	free(mtrAlunos);
+	free(med);
+	fclose(a);
 }
 
 int main(int argc, char** argv){
@@ -128,7 +152,8 @@ int main(int argc, char** argv){
        
     ler_alunos(matriculas, nomes, &n);
     ler_notas(medias);
-    busca(nomes, nome, medias, &n, matriculas);
+    busca(tam, nome, nomes);
+    
     
     
     for(i=0; i<n; i++){
