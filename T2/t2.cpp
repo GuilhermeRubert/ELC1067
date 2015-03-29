@@ -69,7 +69,7 @@ void ler_notas(float* meds){
 	fclose(f);
 }
 
-void busca(int tam, char arg, char** nomes){
+void busca(int tam, char* arg, char** nomes){
 	
 	int  *mtrNotas, *mtrAlunos,mtrNotas1, mtrAlunos1, i, j;
 	float *med, n1, n2;
@@ -100,7 +100,7 @@ void busca(int tam, char arg, char** nomes){
 	
 	for(j=0; j<tam; j++){
 		for(i=0; i<tam; i++){
-			if(nomes[i] == arg)
+			if(strstr(nomes[i], arg)!=NULL)
 				if(mtrNotas[i] == mtrAlunos[j]){
 				printf("Nome: %s Media: %f", med[i]);
 				}
