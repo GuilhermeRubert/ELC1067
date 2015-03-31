@@ -44,15 +44,19 @@ struct vetor {
 
 vetor_t* vetor_cria(void)
 {
+	int cont;
 	struct vetor *vet = (struct vetor*)memo_aloca(sizeof(struct vetor));
 	vet->n = 0;
-	/* TODO aqui */
+	vet->baralho = (carta*) memo_aloca(50*sizeof(carta));
+	
+	for(cont=0; cont<50; cont++)
+		vet->baralho[cont]=NULL;
 	return vet;
 }
 
 void vetor_destroi(vetor_t* vet)
 {
-	/* TODO aqui */
+	memo_libera(vet->baralho);
 	memo_libera(vet);	
 }
 
